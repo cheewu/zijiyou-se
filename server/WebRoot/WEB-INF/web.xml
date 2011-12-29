@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<filter>
+		<filter-name>SolrRequestFilter</filter-name>
+		<filter-class>org.apache.solr.servlet.SolrDispatchFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>SolrRequestFilter</filter-name>
+		<url-pattern>/admin/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>SolrRequestFilter</filter-name>
+		<url-pattern>/att/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>SolrRequestFilter</filter-name>
+		<url-pattern>/dst/*</url-pattern>
+	</filter-mapping>
+
+	<!-- Otherwise it will continue to the old servlets -->
+
+	<servlet>
+		<servlet-name>SolrServer</servlet-name>
+		<display-name>Solr</display-name>
+		<description>Solr Server</description>
+		<servlet-class>org.apache.solr.servlet.SolrServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>SolrUpdate</servlet-name>
+		<display-name>SolrUpdate</display-name>
+		<description>Solr Update Handler</description>
+		<servlet-class>org.apache.solr.servlet.SolrUpdateServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>Logging</servlet-name>
+		<servlet-class>org.apache.solr.servlet.LogLevelSelection</servlet-class>
+	</servlet>
+
+	<!-- @Deprecated -->
+	<servlet>
+		<servlet-name>ping</servlet-name>
+		<jsp-file>/admin/ping.jsp</jsp-file>
+	</servlet>
+  <servlet>
+    <servlet-name>AttractionSearchAction</servlet-name>
+    <servlet-class>org.shirdrn.solr.servlet.AttractionSearchAction</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>DestinationSearchAction</servlet-name>
+    <servlet-class>org.shirdrn.solr.servlet.DestinationSearchAction</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>FullSearchAction</servlet-name>
+    <servlet-class>org.shirdrn.solr.servlet.FullSearchAction</servlet-class>
+  </servlet>
+
+
+	<servlet-mapping>
+		<servlet-name>SolrServer</servlet-name>
+		<url-pattern>/select/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SolrUpdate</servlet-name>
+		<url-pattern>/update/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Logging</servlet-name>
+		<url-pattern>/admin/logging</url-pattern>
+	</servlet-mapping>
+
+	<!-- @Deprecated -->
+	<servlet-mapping>
+		<servlet-name>ping</servlet-name>
+		<url-pattern>/admin/ping</url-pattern>
+	</servlet-mapping>
+
+	<!-- @Deprecated -->
+	<servlet-mapping>
+		<servlet-name>Logging</servlet-name>
+		<url-pattern>/admin/logging.jsp</url-pattern>
+	</servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AttractionSearchAction</servlet-name>
+    <url-pattern>/att/search</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DestinationSearchAction</servlet-name>
+    <url-pattern>/dst/search</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>FullSearchAction</servlet-name>
+    <url-pattern>/dst/fullsearch</url-pattern>
+  </servlet-mapping>
+
+	<mime-mapping>
+		<extension>.xsl</extension>
+		<!-- per http://www.w3.org/TR/2006/PR-xslt20-20061121/ -->
+		<mime-type>application/xslt+xml</mime-type>
+	</mime-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>
