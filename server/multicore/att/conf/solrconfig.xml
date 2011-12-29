@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<config>
+	<luceneMatchVersion>LUCENE_35</luceneMatchVersion>
+
+	<directoryFactory name="DirectoryFactory" class="${solr.directoryFactory:solr.StandardDirectoryFactory}" />
+
+	<requestDispatcher handleSelect="true">
+		<requestParsers enableRemoteStreaming="false" multipartUploadLimitInKB="2048" />
+		<httpCaching lastModifiedFrom="openTime" etagSeed="Solr">
+			<cacheControl>max-age=30, public</cacheControl>
+		</httpCaching>
+	</requestDispatcher>
+
+	<requestHandler name="standard" class="solr.StandardRequestHandler" default="true" />
+	<queryResponseWriter name="jsonWriter" class="solr.JSONResponseWriter" default="true">
+		<str name="content-type">text/plain; charset=UTF-8</str>
+	</queryResponseWriter>
+	<requestHandler name="/update" class="solr.XmlUpdateRequestHandler">
+		<maxPendingDeletes>10000</maxPendingDeletes>
+		<autoCommit>
+			<maxDocs>20</maxDocs>
+			<maxTime>86000</maxTime>
+		</autoCommit>
+	</requestHandler>
+	<requestHandler name="/admin/" class="org.apache.solr.handler.admin.AdminHandlers" />
+	<requestHandler name="/admin/luke" class="org.apache.solr.handler.admin.LukeRequestHandler" />
+
+	<queryParser name="lucene" class="org.apache.solr.search.LuceneQParserPlugin" />
+	<requestHandler name="/lucene" class="solr.SearchHandler">
+		<lst name="defaults">
+			<str name="defType">lucene</str>
+			<str name="qf">title^1.50 content</str>
+
+			<bool name="hl">true</bool>
+			<str name="hl.fl">title content</str>
+			<int name="hl.fragsize">100</int>
+			<int name="hl.snippets">3</int>
+
+			<str name="fl">*,score</str>
+			<str name="qt">standard</str>
+			<str name="wt">standard</str>
+			<str name="version">2.2</str>
+			<str name="echoParams">explicit</str>
+			<str name="indent">true</str>
+			<str name="debugQuery">on</str>
+			<str name="explainOther">on</str>
+		</lst>
+	</requestHandler>
+
+	<queryParser name="search" class="org.shirdrn.solr.search.AttractionQParserPlugin" />
+	<requestHandler name="/search" class="solr.SearchHandler">
+		<lst name="defaults">
+			<str name="defType">search</str>
+			<str name="bf">sum(3,ln(pictureCount))^3.25</str>
+			<str name="bf">sum(1,coverage)^12.75</str>
+			<!--
+			<str name="bf">sin(sum(coverage,sub(div(pi(),2))))</str>
+			-->
+			<str name="qf">title^3.50 content</str>
+
+			<str name="plf"></str>
+			<bool name="cat">false</bool>
+			<str name="cat.boost">1.1111</str>
+
+			<bool name="ao">false</bool>
+			<str name="ao.boost.main">1.0001</str>
+			<str name="ao.boost.front">1.0002</str>
+			<str name="ao.boost.rear">1.0003</str>
+
+			<bool name="ext">false</bool>
+			<str name="ext.file">extFile.txt</str>
+			<str name="ext.dataLoader">org.shirdrn.solr.search.ext.dataloader.FileDataLoader</str>
+
+			<bool name="tr">false</bool>
+			<str name="tr.keywords">游记^1.0 攻略^1.0 自助游^1.0</str>
+			<str name="tr.boost">1.25</str>
+
+			<str name="fl">*,score</str>
+			<str name="qt">standard</str>
+			<str name="wt">standard</str>
+			<str name="version">2.2</str>
+			<!-- 
+			<str name="echoParams">explicit</str>
+			<str name="indent">true</str>
+			<str name="debugQuery">false</str>
+			<str name="explainOther">false</str>
+			 -->
+		</lst>
+	</requestHandler>
+
+	<filterCache class="solr.FastLRUCache" size="1000000" initialSize="1024" autowarmCount="1024" />
+	<useFilterForSortedQuery>true</useFilterForSortedQuery>
+	<queryResultCache class="solr.LRUCache" size="50000" initialSize="1024" autowarmCount="1024" />
+	<queryResultWindowSize>100</queryResultWindowSize>
+	<documentCache class="solr.LRUCache" size="20000" initialSize="1024" />
+	<enableLazyFieldLoading>true</enableLazyFieldLoading>
+
+	<admin>
+		<defaultQuery>solr</defaultQuery>
+	</admin>
+
+</config>
